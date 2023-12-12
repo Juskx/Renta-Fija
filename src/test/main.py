@@ -7,7 +7,7 @@ sys.path.append(os.path.join(current_directory, "..")) ### OJO, SOLUCIONAR PROBL
 
 from datetime import date
 from datetime import datetime
-from DRFTrabajo.funcs.functions import get_ufs
+from package.funcs.functions import get_ufs
 
 # Ejemplo uf diciembre 9 2023 al 9 de enero 2024
 last_uf_day_9 = 36607.69  # El valor de la UF para el día 9 del último mes
