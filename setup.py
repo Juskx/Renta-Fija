@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="entregable_3",
+    name="functions",
     version="0.1.1",
     author="Joaquin Pulgar",
     author_email="joaquin.pulgar10@gmail.com",
