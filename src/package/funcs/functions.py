@@ -1,21 +1,30 @@
-import datetime
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 import calendar
-from datetime import timedelta
+from dateutil.relativedelta import relativedelta
+import locale
 
-def get_ufs(last_uf_known_date, last_uf_value, new_ipc):
-    if last_uf_known_date.day != 9:
-        print("Fecha incorrecta, ingresar fecha con dia 9")
-        return None 
-    else:
-        d=calendar.monthrange(last_uf_known_date.year, last_uf_known_date.month)[1]
-        next_month_date = last_uf_known_date + relativedelta(months=1, day=9)
-        days_until= (next_month_date - last_uf_known_date).days
-        
-        initial_date=last_uf_known_date.strftime('%Y-%m-%d')
-        result_dict={initial_date : last_uf_value}
-        for i in range(1,days_until+1):
-            last_uf_known_date = last_uf_known_date + timedelta(days=1)
-            uf_value = round( ( last_uf_value * (1+new_ipc) ** (i/d) ),2)
-            result_dict[last_uf_known_date.strftime('%Y-%m-%d')] = uf_value
-        return result_dict
+#Función calculadora UF
+def get_ufs(date_last_uf, last_uf_day_9, ipc_day_9):
+    # Validador de la fecha objetivo sea 9
+    if date_last_uf.day != 9:
+        raise ValueError("Error: La función solo admite el día 9 del mes.")
+
+    # Obtener el último día del mes actual
+    ultimo_dia_mes_actual = date_last_uf.replace(day=1) + timedelta(days=calendar.monthrange(date_last_uf.year, date_last_uf.month)[1])
+
+    # Calcular la cantidad total de días en el mes de la última UF conocida
+    dias_en_mes = calendar.monthrange(date_last_uf.year, date_last_uf.month)[1]
+
+    # Calcular la diferencia de días entre el 9 de diciembre y el último día del mes actual
+    diferencia_dias = (ultimo_dia_mes_actual.replace(day=9) - date_last_uf.replace(day=9)).days
+
+    # Inicializar el diccionario de resultados
+    uf_values = {}
+
+    # Calcular el valor de la UF para cada día desde la fecha inicial hasta el 9 del siguiente mes
+    for i in range(0, diferencia_dias + 1):
+        fecha_actual = date_last_uf + timedelta(days=i)
+        valor_uf_objetivo = round(last_uf_day_9 * (1 + ipc_day_9) ** (i / dias_en_mes), 2)
+        uf_values[fecha_actual.strftime('%d-%m-%Y')] = valor_uf_objetivo
+
+    return uf_values
