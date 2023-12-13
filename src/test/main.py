@@ -1,10 +1,4 @@
 ### ENTREGABLE NÚMERO 3 MAIN FILE###
-import sys
-import os
-
-current_directory = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(current_directory, "..")) ### OJO, SOLUCIONAR PROBLEMA
-
 from datetime import date
 from datetime import datetime
 from package.funcs.functions import get_ufs
