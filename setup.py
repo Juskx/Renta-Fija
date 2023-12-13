@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="functions",
-    version="0.1.1",
+    version="0.0.1",
     author="Joaquin Pulgar",
     author_email="joaquin.pulgar10@gmail.com",
     description="Test",
@@ -20,6 +20,5 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src", exclude=[""]),
-    python_requires=">=3.10",
-    install_requires=["dateutil", "datetime", "calendar"],
+    python_requires=">=3.09",
 )

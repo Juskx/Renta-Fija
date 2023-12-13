@@ -2,7 +2,8 @@
 import sys
 import os
 
-
+current_directory = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(current_directory, "..")) ### OJO, SOLUCIONAR PROBLEMA
 
 from datetime import date
 from datetime import datetime
