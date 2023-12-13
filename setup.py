@@ -9,7 +9,7 @@ setup(
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/Juskx/Renta-Fija",
-    license="GPL-3.0-or-later",  # Actualicé la licencia para que coincida con el código SPDX
+    license="GPL-3.0-or-later", 
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
