@@ -32,7 +32,7 @@ class FixedCoupon:
         return self.fecha_fin
 
 class CLBond:
-    def _init_(self, fixed_coupons: List[dict], tera=None):
+    def __init__(self, fixed_coupons: List[dict], tera=None):
         self.fixed_coupons = fixed_coupons
         self.tera = tera if tera is not None else self.get_tera()
 
