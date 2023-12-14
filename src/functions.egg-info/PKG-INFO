@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: functions
+Version: 0.0.1
+Summary: Test
+Home-page: https://github.com/Juskx/Renta-Fija
+Author: Joaquin Pulgar
+Author-email: joaquin.pulgar10@gmail.com
+License: GPL-3.0-or-later
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.09
+Description-Content-Type: text/markdown
+
+# README
