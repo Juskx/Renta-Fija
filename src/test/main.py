@@ -16,23 +16,20 @@ from package.fixedincome.classes import CLBond
 from package.fixedincome.classes import FixedCoupon
 from datetime import date
 
-# Crear instancias de FixedCoupon con fechas de inicio y fin
 coupon1 = FixedCoupon(amortizacion=0.0, interes=0.01, saldo_residual=100.0,fecha_ini=date(2022,10,1),fecha_fin=date(2023,10,1))
 coupon2 = FixedCoupon(amortizacion=100.0, interes=0.01, saldo_residual=0.0, fecha_ini=date(2023, 10, 1), fecha_fin=date(2024, 10, 1))
 
-# Crear lista de cupones fijos
-fixed_coupons_list = [coupon1, coupon2]
+lista = [coupon1, coupon2]
 
-# Crear instancia de CLBond
-cl_bond = CLBond(fixed_coupons = fixed_coupons_list)
+bono = CLBond(fixed_coupons = lista)
 
 # Imprimir el valor de la "tera"
-print("Tera:", cl_bond.tera)
+print("Tera:", bono.tera)
 
 # Imprimir el valor del bono para un notional, tasa y fecha dados
-notional_value = 1000000.0
-interest_rate = 0.05
-valuation_date = date(2023, 1, 1)
+nocional = 1000000.0
+tasa = 0.05
+fecha = date(2023, 1, 1)
 
-bond_value = cl_bond.get_value(notional_value, interest_rate,valuation_date)
+bond_value = bono.get_value(nocional, tasa,fecha)
 print("Valor del bono:", bond_value)
