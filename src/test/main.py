@@ -17,8 +17,8 @@ from package.fixedincome.classes import FixedCoupon
 from datetime import date
 
 # Crear instancias de FixedCoupon con fechas de inicio y fin
-coupon1 = FixedCoupon(amortizacion=99.0, interes=0.009, saldo_residual=95.0,fecha_ini=date(2022,10,1),fecha_fin=date(2023,10,1))
-coupon2 = FixedCoupon(amortizacion=70.0, interes=0.006, saldo_residual=11.0, fecha_ini=date(2022, 10, 1), fecha_fin=date(2023, 10, 1))
+coupon1 = FixedCoupon(amortizacion=0.0, interes=0.01, saldo_residual=100.0,fecha_ini=date(2022,10,1),fecha_fin=date(2023,10,1))
+coupon2 = FixedCoupon(amortizacion=100.0, interes=0.01, saldo_residual=0.0, fecha_ini=date(2023, 10, 1), fecha_fin=date(2024, 10, 1))
 
 # Crear lista de cupones fijos
 fixed_coupons_list = [coupon1, coupon2]
