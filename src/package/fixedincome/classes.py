@@ -1,6 +1,7 @@
 from datetime import date
 from typing import List
 from scipy.optimize import newton
+import numpy as np
 
 class FixedCoupon:
     def __init__(self, amortizacion: float, interes: float, saldo_residual: float, fecha_ini: date, fecha_fin: date):
@@ -13,36 +14,24 @@ class FixedCoupon:
         self.saldo_residual = float(saldo_residual)
         self.fecha_ini = fecha_ini
         self.fecha_fin = fecha_fin
-        self.cupon = self.get_cupon()
+
+        self.flow = self.amortizacion + self.interes
 
     def _validate_value(self, name: str, value: float):
-        if not (0 <= value <= 100):
+        if not isinstance (value, float) or (0 < value < 100):
             raise ValueError(f"{name.capitalize()} debe estar en el rango de 0 a 100.")
-
-    def get_cupon(self):
-        return self.amortizacion + self.interes
-
-    def get_amortization_and_interest(self):
-        return self.amortizacion, self.interes
-
-    def get_fecha_ini(self):
-        return self.fecha_ini
-
-    def get_fecha_fin(self):
-        return self.fecha_fin
 
 class CLBond:
     def __init__(self, fixed_coupons: List[dict], tera=None):
         self.fixed_coupons = fixed_coupons
         self.tera = tera if tera is not None else self.get_tera()
+        self.fecha_emision = self.fixed_coupons[0].fecha_ini
 
     def get_tera(self):
-        initial_guess = sum(cupon.amortizacion + cupon.interes for cupon in self.fixed_coupons) / len(self.fixed_coupons)
+        initial_guess = 0.05
         tera = newton(
             lambda tasa: sum(
-                (cupon.amortizacion + cupon.interes) / ((1 + tasa) ** self.get_fraccion_tiempo(cupon.fecha_ini, cupon.fecha_fin))
-                for cupon in self.fixed_coupons
-            ) - 1,
+                (cupon.flow) / ((1 + tasa) ** self.get_fraccion_tiempo(self.fecha_emision, cupon.fecha_fin)) for cupon in self.fixed_coupons) - 1,
             x0=initial_guess,
         )
         return tera
@@ -51,24 +40,50 @@ class CLBond:
         nuevo_tera = self.get_tera()
         if nuevo_tera != self.tera:
             self.tera = nuevo_tera
-
-    def get_value(self, notional: float, tasa: float, fecha: date) -> float:
-        return notional * sum((cupon.amortizacion + cupon.interes) / ((1 + tasa) ** ((cupon.fecha_fin - fecha).days / 360)) for cupon in self.fixed_coupons)
-    
-    def get_dv01(self, notional: float) -> float:
-        return notional * sum((cupon['amortizacion'] + cupon['interes']) * ((cupon['fecha_fin'] - cupon['fecha_ini']).days / 360) / ((1 + self.tera) ** ((cupon['fecha_fin'] - cupon['fecha_ini']).days / 360 + 1)) for cupon in self.fixed_coupons)
-
-    def get_wf(self, rate: float, fecha_ini: date, fecha_fin: date) -> float:
-        time_fraction = (fecha_fin - fecha_ini).days / 360
-        return (1 + rate) ** time_fraction
-    
-    def get_wf_compounded(self, rate_value: float, fecha_ini: date, fecha_fin: date) -> float:
-        time_fraction = (fecha_fin - fecha_ini).days / 360
-        return (1 + rate_value) ** time_fraction
-
+ 
     def get_fraccion_tiempo(self, fecha_ini: date, fecha_fin: date) -> float:
         return (fecha_fin - fecha_ini).days / 360
+    
+    def get_valor_par(self, date: date) -> float:
+        current_coupon = self.get_cupon_actual(date)
+        days_to_maturity = (current_coupon.fecha_fin - date).days
+        discount_factor = 1 / ((1 + self.tera) ** (days_to_maturity / 360))
+        par_value = current_coupon.saldo_residual * discount_factor
+        return round(par_value)
+    
+    def get_cupon_actual(self, date: date) -> FixedCoupon:
+        for c in self.fixed_coupons:
+            if c.fecha_ini <= date and c.fecha_fin > date:
+                return c
+        return None
+    
+    def get_pv(self, date: date, tera: float) -> float:
+        present_value = 0
+        for cupon in self.fixed_coupons:
+            if cupon.fecha_fin > date:
+                days_to_maturity = (cupon.fecha_fin - date).days
+                discount_factor = 1 / ((1 + tera) ** (days_to_maturity / 360))
+                present_value += cupon.flow * discount_factor
+        return present_value
+    
+    def get_price(self, date: date) -> float:
+        vp = self.get_pv(date)
+        valor_par = self.get_valor_par(date)
+        precio = 100.0 * vp/valor_par
+        return precio
+    
+    def get_dv01(self) -> float:
 
-    def get_npv_derivative(self, rate, cupon):
-        return -cupon['amortizacion'] * ((cupon['fecha_fin'] - cupon['fecha_ini']).days / 360) * (1 + rate) ** (((cupon['fecha_fin'] - cupon['fecha_ini']).days / 360) - 1)
+        vp_r = self.get_pv(self.fecha_emision, self.tera)
 
+        r_01 = self.tera + 0.0001 
+        vp_r_plus_01 = self.get_pv(self.fecha_emision,r_01)
+
+        dv01 = (vp_r_plus_01 - vp_r)
+
+        return dv01
+    
+    def get_valor(self, date: date) ->float:
+        precio = self.get_price(date)
+        valor_par = self.get_valor_par(date)
+        return precio * valor_par / 10_000
