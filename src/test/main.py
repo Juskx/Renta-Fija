@@ -16,8 +16,8 @@ from package.fixedincome.classes import CLBond
 from package.fixedincome.classes import FixedCoupon
 from datetime import date
 
-coupon1 = FixedCoupon(amortizacion=0.0, interes=0.01, saldo_residual=100.0,fecha_ini=date(2022,10,1),fecha_fin=date(2023,10,1))
-coupon2 = FixedCoupon(amortizacion=100.0, interes=0.01, saldo_residual=0.0, fecha_ini=date(2023, 10, 1), fecha_fin=date(2024, 10, 1))
+coupon1 = FixedCoupon(amortizacion=50.0, interes=0.01, saldo_residual=60.0,fecha_ini=date(2022,10,1),fecha_fin=date(2023,10,1))
+coupon2 = FixedCoupon(amortizacion=30.0, interes=0.01, saldo_residual=20.0, fecha_ini=date(2023, 10, 1), fecha_fin=date(2024, 10, 1))
 
 lista = [coupon1, coupon2]
 
@@ -32,4 +32,5 @@ tasa = 0.05
 fecha = date(2023, 1, 1)
 
 bond_value = bono.get_value(nocional, tasa,fecha)
+
 print("Valor del bono:", bond_value)
